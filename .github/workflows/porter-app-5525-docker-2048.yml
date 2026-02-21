@@ -1,0 +1,27 @@
+"on":
+    push:
+        branches:
+            - master
+name: Deploy to docker-2048
+jobs:
+    porter-deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+            - name: Set Github tag
+              id: vars
+              run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+            - name: Setup porter
+              uses: porter-dev/setup-porter@v0.1.0
+            - name: Deploy stack
+              timeout-minutes: 30
+              run: porter apply
+              env:
+                PORTER_APP_NAME: docker-2048
+                PORTER_CLUSTER: "5525"
+                PORTER_DEPLOYMENT_TARGET_ID: 7462d111-6955-41ab-8bf9-1524414c9d2b
+                PORTER_HOST: https://dashboard.porter.run
+                PORTER_PROJECT: "18491"
+                PORTER_TAG: ${{ steps.vars.outputs.sha_short }}
+                PORTER_TOKEN: ${{ secrets.PORTER_APP_18491_1106345600 }}
