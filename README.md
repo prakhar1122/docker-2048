@@ -1,7 +1,9 @@
 # docker-2048 changed 21
 
 
-simple is better very better
+simple is better very better again 
+
+
 
 a smaller docker version of 2048
 
