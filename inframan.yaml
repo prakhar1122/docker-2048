@@ -1,8 +1,5 @@
 version: v1
 
-# ────────────────────────────────────────────────────────
-# 1. BASE CONFIGURATION (Shared across all environments)
-# ────────────────────────────────────────────────────────
 service:
   port: 80
   scaling:
@@ -16,73 +13,19 @@ build:
 env:
   APP_NAME: "docker-2048"
 
-# ────────────────────────────────────────────────────────
-# 2. ENVIRONMENT OVERRIDES
-# ────────────────────────────────────────────────────────
-environments:
-
-  # --- DEBUG ENVIRONMENT ---
-  debug:
-    service:
-      scaling:
-        min_replicas: 0
-        max_replicas: 1
-
-    env:
-      FRAMEWORK_ENV: "debug"
-
-    pre_build:
-      - name: check-assets
-        image: alpine:latest
-        commands:
-          - echo "Checking that all required files exist..."
-          - test -f 2048/index.html
-          - test -f 2048/js/application.js
-          - test -f Dockerfile
-          - echo "All files present!"
-
-    pre_deploy:
-      - name: verify-nginx-config
-        commands:
-          - nginx -t
-
-    post_deploy: []
-
-  # --- PROD ENVIRONMENT ---
-  prod:
-    service:
-      scaling:
-        min_replicas: 2
-        max_replicas: 10
-
-    env:
-      FRAMEWORK_ENV: "production"
-
-    pre_build:
-      - name: check-assets
-        image: alpine:latest
-        timeout: 60
-        commands:
-          - echo "Strict asset check for production..."
-          - test -f 2048/index.html
-          - test -f 2048/js/application.js
-          - test -f 2048/js/game_manager.js
-          - test -f 2048/js/grid.js
-          - test -f 2048/style/main.css
-          - echo "All production assets verified!"
-
-    pre_deploy:
-      - name: verify-nginx-config
-        commands:
-          - nginx -t
-      - name: verify-html-assets
-        commands:
-          - grep "2048" /usr/share/nginx/html/index.html
-
-    post_deploy:
-      - name: health-check
-        image: curlimages/curl:latest
-        timeout: 30
-        commands:
-          - echo "Post-deploy health check placeholder"
-          - echo "In production, this would curl the service endpoint"
+pipeline_variables:
+  CHECK_IMAGE: alpine:latest
+  CHECK_ASSETS_CMD: >-
+    echo "Checking required files..." &&
+    test -f 2048/index.html &&
+    test -f 2048/js/application.js &&
+    test -f Dockerfile &&
+    echo "All assets present!"
+  LINT_DOCKERFILE_CMD: >-
+    echo "Validating Dockerfile..." &&
+    head -1 Dockerfile | grep -q "^FROM" &&
+    grep -q "EXPOSE" Dockerfile &&
+    echo "Dockerfile checks passed!"
+  NGINX_CHECK_CMD: "nginx -t"
+  HEALTH_IMAGE: curlimages/curl:latest
+  HEALTH_CMD: "echo 'Health check placeholder'"
