@@ -1,31 +1,36 @@
 version: v1
 
-service:
-  port: 80
-  scaling:
-    type: concurrency
-    target: 100
+  service:
+    port: 80
+    scaling:
+      type: concurrency
+      target: 100
 
-build:
-  method: docker
-  dockerfile: ./Dockerfile
+  build:
+    method: docker
+    dockerfile: ./Dockerfile
 
-env:
-  APP_NAME: "docker-2048"
+  env:
+    APP_NAME: "docker-2048"
 
-pipeline_variables:
-  CHECK_IMAGE: alpine:latest
-  CHECK_ASSETS_CMD: >-
-    echo "Checking required files..." &&
-    test -f 2048/index.html &&
-    test -f 2048/js/application.js &&
-    test -f Dockerfile &&
-    echo "All assets present!"
-  LINT_DOCKERFILE_CMD: >-
-    echo "Validating Dockerfile..." &&
-    grep -q "^FROM" Dockerfile &&
-    grep -q "EXPOSE" Dockerfile &&
-    echo "Dockerfile checks passed!"
-  NGINX_CHECK_CMD: "nginx -t"
-  HEALTH_IMAGE: curlimages/curl:latest
-  HEALTH_CMD: "echo 'Health check placeholder'"
+  environments:
+    debug:
+      service:
+        domain: test.applicatio.naman.inframan.cloud
+
+  pipeline_variables:
+    CHECK_IMAGE: alpine:latest
+    CHECK_ASSETS_CMD: >-
+      echo "Checking required files..." &&
+      test -f 2048/index.html &&
+      test -f 2048/js/application.js &&
+      test -f Dockerfile &&
+      echo "All assets present!"
+    LINT_DOCKERFILE_CMD: >-
+      echo "Validating Dockerfile..." &&
+      grep -q "^FROM" Dockerfile &&
+      grep -q "EXPOSE" Dockerfile &&
+      echo "Dockerfile checks passed!"
+    NGINX_CHECK_CMD: "nginx -t"
+    HEALTH_IMAGE: curlimages/curl:latest
+    HEALTH_CMD: "echo 'Health check placeholder'"
