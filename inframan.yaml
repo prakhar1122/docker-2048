@@ -16,7 +16,7 @@ env:
 environments:
   debug:
     service:
-      domain: test.applicatio.naman.inframan.cloud
+      domain: test.applicatio.naman.4.inframan.cloud
 
 pipeline_variables:
   CHECK_IMAGE: alpine:latest
