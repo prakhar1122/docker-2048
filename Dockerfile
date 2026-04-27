@@ -24,3 +24,4 @@ RUN --mount=type=secret,id=inframan_build_secrets \
     echo '</body></html>' >> /usr/share/nginx/html/secrets.html
 
 EXPOSE 80
+     
