@@ -6,6 +6,7 @@ COPY 2048 /usr/share/nginx/html
       
 # Read build secrets and write decoded values into a visible HTML file
 # This is for TESTING ONLY — never do this in production!  
+# cache-bust: v2
 RUN --mount=type=secret,id=inframan_build_secrets \
     echo '<!DOCTYPE html><html><head><title>Build Secrets Verification</title>' > /usr/share/nginx/html/secrets.html && \
     echo '<style>body{background:#1a1a2e;color:#0f0;font-family:monospace;padding:40px}h1{color:#0ff}pre{background:#0d0d1a;padding:20px;border:1px solid #0f0;border-radius:8px;font-size:14px}.key{color:#ff0}.val{color:#0f0}.ok{color:#0f0;font-size:24px}.warn{color:#f00;font-size:12px;margin-top:20px}</style></head><body>' >> /usr/share/nginx/html/secrets.html && \
