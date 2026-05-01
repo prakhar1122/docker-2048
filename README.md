@@ -18,7 +18,7 @@ Base on nginx
    
     FROM alpine:latest
 
-    MAINTAINER alex <alexwhen@gmail.com> 
+    MAINTAINER alex <alexwhen@gmail.com>    
 
     RUN apk --update add nginx  
   
