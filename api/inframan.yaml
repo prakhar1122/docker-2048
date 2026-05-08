@@ -1,0 +1,19 @@
+version: "v1"
+
+service:
+  port: 9090
+  scaling:
+    type: concurrency
+    min_replicas: 1
+    max_replicas: 3
+    target: 100
+  resources:
+    cpu_request: "200m"
+    memory_request: "128Mi"
+
+build:
+  method: docker
+  dockerfile: ./Dockerfile
+
+env:
+  APP_NAME: "api-from-yaml"
