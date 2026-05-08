@@ -1,7 +1,7 @@
 version: "v1"
 
 service:
-  port: 8888
+  port: 80
   scaling:
     type: concurrency
     min_replicas: 0
