@@ -2,6 +2,8 @@ version: "v1"
 
 service:
   port: 80
+  domain: ed853032.inframan.cloud
+  path_prefix: /
   scaling:
     type: concurrency
     min_replicas: 0
