@@ -10,7 +10,7 @@ service:
     max_replicas: 2
     target: 100
   resources:
-    cpu_request: "101m"
+    cpu_request: "102m"
     memory_request: "256Mi"
 
 build:
