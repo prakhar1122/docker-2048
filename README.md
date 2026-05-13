@@ -3,7 +3,7 @@
 
 simple is better very better again mig cicd 3
 fff
-fffff
+fffff   
 
 
 a smaller docker version of 2048
@@ -16,7 +16,7 @@ Base on nginx
      
 #dockerfile         
      
-    FROM alpine:latest   
+    FROM alpine:latest      
 
     MAINTAINER alex <alexwhen@gmail.com>    
 
