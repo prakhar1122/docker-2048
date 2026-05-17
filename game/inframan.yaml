@@ -1,0 +1,6 @@
+service:
+  name: game
+  port: 80
+  resources:
+    cpu: 100m
+    memory: 128Mi
