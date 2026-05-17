@@ -1,0 +1,7 @@
+service:
+  name: api
+  port: 8080
+  replicas: 1
+  resources:
+    cpu: 100m
+    memory: 128Mi
