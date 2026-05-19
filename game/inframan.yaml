@@ -2,7 +2,7 @@ version: "v1"
 
 service:
   port: 80
-  domain: ed853032.inframan.cloud
+  domain: 17.may.docker.2048.inframan.cloud
   path_prefix: /
   scaling:
     type: concurrency
