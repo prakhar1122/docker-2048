@@ -1,7 +1,21 @@
+version: "v1"
+
 service:
-  name: game
   port: 80
-  replicas: 1
+  domain: ed853032.inframan.cloud
+  path_prefix: /
+  scaling:
+    type: concurrency
+    min_replicas: 0
+    max_replicas: 2
+    target: 100
   resources:
-    cpu: 100m
-    memory: 128Mi
+    cpu_request: "103m"
+    memory_request: "256Mi"
+
+build:
+  method: docker
+  dockerfile: ./Dockerfile
+
+env:
+  APP_NAME: "game-from-yaml"
