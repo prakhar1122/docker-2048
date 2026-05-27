@@ -16,7 +16,7 @@ Base on nginx
         
 #dockerfile            
      
-    FROM alpine:latest            
+    FROM alpine:lates   t            
 
     MAINTAINER alex <alexwhen@gmail.com>    
 
