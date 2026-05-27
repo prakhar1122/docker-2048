@@ -8,3 +8,4 @@ COPY 2048 /usr/share/nginx/html
 COPY connectivity.html /usr/share/nginx/html/connectivity.html
 
 EXPOSE 80
+

@@ -71,3 +71,4 @@ func main() {
 	fmt.Printf("api service starting on :%s (GAME_URL=%s)\n", port, gameURL)
 	http.ListenAndServe(":"+port, nil)
 }
+
