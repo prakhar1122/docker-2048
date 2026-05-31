@@ -1,0 +1,21 @@
+version: "v1"
+
+service:
+  port: 80
+  domain: docker.2048.inframan.cloud
+  path_prefix: /
+  node_pool: apps
+  scaling:
+    type: concurrency
+    min_replicas: 1
+    max_replicas: 3
+    target: 100
+  resources:
+    cpu_request: "50m"
+    memory_request: "64Mi"
+    cpu_limit: "200m"
+    memory_limit: "128Mi"
+
+build:
+  method: docker
+  dockerfile: ./Dockerfile
