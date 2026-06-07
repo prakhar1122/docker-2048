@@ -17,7 +17,7 @@ Base on nginx
 #dockerfile            f
          
     FROM alpine:lates   t               
-
+   
     MAINTAINER alex <alexwhen@gmail.com>    
 
     RUN apk --update add nginx  
