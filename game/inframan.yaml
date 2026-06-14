@@ -2,7 +2,7 @@ version: "v1"
 
 service:
   port: 80
-  domain: hykr.demo.inframan.cloud
+  domain: 8june.inframan.cloud
   path_prefix: /
   node_pool: apps
   scaling:
