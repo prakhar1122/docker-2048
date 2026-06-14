@@ -4,7 +4,7 @@ service:
   port: 80
   domain: 8june.inframan.cloud
   path_prefix: /
-  node_pool: apps
+  node_pool: application-pool
   scaling:
     type: concurrency
     min_replicas: 1

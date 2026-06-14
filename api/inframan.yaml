@@ -2,7 +2,7 @@ version: "v1"
 
 service:
   port: 8080
-  node_pool: apps
+  node_pool: application-pool
   scaling:
     type: concurrency
     min_replicas: 1
