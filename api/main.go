@@ -14,7 +14,7 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-
+ 
 	gameURL := os.Getenv("GAME_URL") // Connection env var → points to game service
 
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
