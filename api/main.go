@@ -1,21 +1,44 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
-	"time" 
+	"time"
+
+	"github.com/redis/go-redis/v9"
 )
-      
+
+var rdb *redis.Client
+
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
- 
-	gameURL := os.Getenv("GAME_URL") // Connection env var → points to game service
+
+	gameURL := os.Getenv("GAME_URL")
+
+	if redisURL := os.Getenv("REDIS_URL"); redisURL != "" {
+		opts, err := redis.ParseURL(redisURL)
+		if err != nil {
+			fmt.Printf("redis: invalid REDIS_URL: %v\n", err)
+		} else {
+			rdb = redis.NewClient(opts)
+			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+			defer cancel()
+			if err := rdb.Ping(ctx).Err(); err != nil {
+				fmt.Printf("redis: ping failed: %v\n", err)
+			} else {
+				fmt.Println("redis: connected")
+			}
+		}
+	} else {
+		fmt.Println("redis: REDIS_URL not set, skipping connection")
+	}
 
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -43,7 +66,6 @@ func main() {
 			return
 		}
 
-		// Call the game service back to verify bidirectional connectivity
 		resp, err := http.Get(gameURL)
 		if err != nil {
 			result["error"] = fmt.Sprintf("failed to reach game service: %v", err)
@@ -65,10 +87,27 @@ func main() {
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"status": "healthy"})
+
+		result := map[string]any{"status": "healthy"}
+
+		if rdb == nil {
+			result["redis"] = "not_configured"
+		} else {
+			ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
+			defer cancel()
+			if err := rdb.Ping(ctx).Err(); err != nil {
+				result["redis"] = "unreachable"
+				result["redis_error"] = err.Error()
+				result["status"] = "degraded"
+				w.WriteHeader(http.StatusServiceUnavailable)
+			} else {
+				result["redis"] = "ok"
+			}
+		}
+
+		json.NewEncoder(w).Encode(result)
 	})
 
 	fmt.Printf("api service starting on :%s (GAME_URL=%s)\n", port, gameURL)
 	http.ListenAndServe(":"+port, nil)
 }
-

@@ -20,3 +20,6 @@ build:
 
 env:
   GAME_URL: "http://game.default.svc.cluster.local"
+
+connections:
+  - redis/sessions
