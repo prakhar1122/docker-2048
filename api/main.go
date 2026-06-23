@@ -100,6 +100,7 @@ func main() {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
+		fmt.Printf("event received: type=%s score=%d ts=%d\n", ev.Type, ev.Score, ev.Ts)
 		if rdb != nil {
 			ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 			defer cancel()
