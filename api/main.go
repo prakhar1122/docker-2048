@@ -85,6 +85,47 @@ func main() {
 		json.NewEncoder(w).Encode(result)
 	})
 
+	http.HandleFunc("/event", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+		body, _ := io.ReadAll(r.Body)
+		var ev struct {
+			Type  string `json:"type"`
+			Score int    `json:"score"`
+			Ts    int64  `json:"ts"`
+		}
+		if err := json.Unmarshal(body, &ev); err != nil || ev.Type == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		if rdb != nil {
+			ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
+			defer cancel()
+			rdb.Incr(ctx, "events:count:"+ev.Type)
+			rdb.Set(ctx, "events:last:"+ev.Type, string(body), 0)
+		}
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	http.HandleFunc("/stats", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if rdb == nil {
+			json.NewEncoder(w).Encode(map[string]any{"redis": "not_configured"})
+			return
+		}
+		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
+		defer cancel()
+		stats := map[string]any{}
+		for _, t := range []string{"score_update", "game_start", "game_over"} {
+			count, _ := rdb.Get(ctx, "events:count:"+t).Int64()
+			last, _ := rdb.Get(ctx, "events:last:"+t).Result()
+			stats[t] = map[string]any{"count": count, "last": last}
+		}
+		json.NewEncoder(w).Encode(stats)
+	})
+
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
