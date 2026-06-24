@@ -13,8 +13,6 @@ service:
         memory_request: 64Mi
         cpu_limit: 200m
         memory_limit: 128Mi
-env:
-    GAME_URL: http://game.default.svc.cluster.local
 connections:
     REDIS_URL: redis/sessions
 build:
