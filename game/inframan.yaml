@@ -1,26 +1,22 @@
-version: "v1"
-
+# Managed by Inframan — generated from console config. Edits here are the source of truth.
+version: v1
 service:
-  port: 80
-  domain: 8june.inframan.cloud
-  path_prefix: /
-  node_pool: application-pool
-  scaling:
-    type: concurrency
-    min_replicas: 1
-    max_replicas: 3
-    target: 100
-  resources:
-    cpu_request: "52m"
-    memory_request: "64Mi"
-    cpu_limit: "200m"
-    memory_limit: "128Mi"
-
-build:
-  method: docker
-  dockerfile: ./Dockerfile
-
+    port: 80
+    domain: 8june.inframan.cloud
+    path_prefix: /
+    node_pool: application-pool
+    scaling:
+        type: concurrency
+        min_replicas: 0
+        max_replicas: 3
+        target: 100
+    resources:
+        cpu_request: 52m
+        memory_request: 64Mi
+        cpu_limit: 200m
+        memory_limit: 128Mi
 connections:
-  - service/api
-
-
+    API_URL: service/api
+build:
+    method: docker
+    dockerfile: ./Dockerfile
