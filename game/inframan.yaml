@@ -1,26 +1,23 @@
-version: "v1"
-
+# Managed by Inframan — generated from console config. Edits here are the source of truth.
+version: v1
 service:
-  port: 80
-  domain: 8june.inframan.cloud
-  path_prefix: /
-  node_pool: application-pool
-  scaling:
-    type: concurrency
-    min_replicas: 1
-    max_replicas: 3
-    target: 100
-  resources:
-    cpu_request: "52m"
-    memory_request: "64Mi"
-    cpu_limit: "200m"
-    memory_limit: "128Mi"
-
+    port: 80
+    domain: 8june.inframan.cloud
+    path_prefix: /
+    node_pool: application-pool
+    scaling:
+        type: concurrency
+        min_replicas: 0
+        max_replicas: 3
+        target: 100
+    resources:
+        cpu_request: 52m
+        memory_request: 64Mi
+        cpu_limit: 200m
+        memory_limit: 128Mi
+    enable_debug: true
+env:
+    API_URL: http://api-v19-00001.docker-2048.svc.cluster.local
 build:
-  method: docker
-  dockerfile: ./Dockerfile
-
-connections:
-  - service/api
-
-
+    method: docker
+    dockerfile: ./Dockerfile
