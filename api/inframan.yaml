@@ -14,7 +14,7 @@ service:
         cpu_limit: 200m
         memory_limit: 128Mi
 connections:
-    REDIS: redis/sessions
+    REDIS_URL: redis/sessions
 secrets:
     TEST_HAHA: TEST_HAHA
 build:
