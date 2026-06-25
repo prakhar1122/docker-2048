@@ -22,6 +22,8 @@ func main() {
 
 	gameURL := os.Getenv("GAME_URL")
 
+	fmt.Printf("TEST_HAHA=%q\n", os.Getenv("TEST_HAHA"))
+
 	if redisURL := os.Getenv("REDIS_URL"); redisURL != "" {
 		opts, err := redis.ParseURL(redisURL)
 		if err != nil {
