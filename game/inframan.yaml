@@ -2,7 +2,7 @@
 version: v1
 service:
     port: 80
-    domain: 8june.inframan.cloud
+    domain: demo.inframan.cloud
     path_prefix: /
     node_pool: application-pool
     scaling:
@@ -15,10 +15,12 @@ service:
         memory_request: 64Mi
         cpu_limit: 200m
         memory_limit: 128Mi
+    enable_debug: true
+    network:
+        private: false
+        timeout_seconds: 300
 connections:
     API_URL: service/api
 build:
     method: docker
     dockerfile: ./Dockerfile
-
-
