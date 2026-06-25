@@ -2,7 +2,7 @@
 version: v1
 service:
     port: 80
-    domain: 8june.inframan.cloud
+    domain: demo.inframan.cloud
     path_prefix: /
     node_pool: application-pool
     scaling:
@@ -20,5 +20,3 @@ connections:
 build:
     method: docker
     dockerfile: ./Dockerfile
-
-
