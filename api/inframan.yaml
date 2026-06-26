@@ -2,10 +2,11 @@
 version: v1
 service:
     port: 8080
+    domain: 8june.inframan.cloud
     node_pool: application-pool
     scaling:
         type: concurrency
-        min_replicas: 1
+        min_replicas: 0
         max_replicas: 3
         target: 100
     resources:
@@ -13,9 +14,10 @@ service:
         memory_request: 64Mi
         cpu_limit: 200m
         memory_limit: 128Mi
+connections:
+    REDIS_URL: redis/sessions
 secrets:
     TEST_HAHA: TEST_HAHA
 build:
     method: docker
     dockerfile: ./Dockerfile
-
