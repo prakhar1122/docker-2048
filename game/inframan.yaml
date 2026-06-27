@@ -1,22 +1,20 @@
 # Managed by Inframan — generated from console config. Edits here are the source of truth.
+# Managed by Inframan — generated from console config. Edits here are the source of truth.
 version: v1
 service:
     port: 80
-    domain: demo.inframan.cloud
     path_prefix: /
+    path_rewrite: ghj
     node_pool: application-pool
     scaling:
         type: concurrency
-        min_replicas: 0
-        max_replicas: 3
+        min_replicas: 1
+        max_replicas: 1
         target: 100
     resources:
-        cpu_request: 52m
-        memory_request: 64Mi
-        cpu_limit: 200m
-        memory_limit: 128Mi
-connections:
-    API_URL: service/api
+        cpu_request: 100m
+        memory_request: 128Mi
+    enable_debug: true
 build:
     method: docker
     dockerfile: ./Dockerfile
