@@ -57,3 +57,5 @@ If you run docker with boot2docker on Mac or Windows, the URL should be:
 <!-- root-yaml test 1782627296 -->
 
 <!-- root-yaml test2 1782627330 -->
+
+<!-- both-parse 1782627687 -->
