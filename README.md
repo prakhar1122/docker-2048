@@ -53,3 +53,5 @@ If you run docker with boot2docker on Mac or Windows, the URL should be:
 <!-- migration test 1782622811 -->
 
 <!-- retest 1782623120 -->
+
+<!-- root-yaml test 1782627296 -->
