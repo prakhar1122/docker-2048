@@ -19,7 +19,7 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
- 
+  
 	gameURL := os.Getenv("GAME_URL")
 
 	fmt.Printf("TEST_HAHA=%q\n", os.Getenv("TEST_HAHA"))
