@@ -37,5 +37,3 @@ services:
         build:
             method: docker
             dockerfile: ./Dockerfile
-        connections:
-            api: service/api
