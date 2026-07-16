@@ -39,4 +39,4 @@ services:
             method: docker
             dockerfile: ./Dockerfile
         connections:
-            API: service/api
+            API: service/docker-2048/api
