@@ -1,7 +1,7 @@
 # Managed by Inframan — generated from console config. Edits here are the source of truth.
 version: v1
 # immutable — managed by Inframan, do not edit
-application: docker-2048
+application: DOCKER-2048
 services:
     api:
         type: web
@@ -19,11 +19,10 @@ services:
         path: api
         build:
             method: docker
-            dockerfile: api/Dockerfile
+            dockerfile: ./Dockerfile
     game:
         type: web
         port: 80
-        domain: 23july.inframan.cloud
         path_prefix: /
         node_pool: application-pool
         scaling:
@@ -37,6 +36,4 @@ services:
         path: game
         build:
             method: docker
-            dockerfile: game/Dockerfile
-        connections:
-            API_URL: service/docker-2048/api
+            dockerfile: ./Dockerfile
