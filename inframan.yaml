@@ -39,4 +39,4 @@ services:
             method: docker
             dockerfile: game/Dockerfile
         connections:
-            API_URL: service/docker-2048/api
+            API_URL: service/DOCKER-2048/api
