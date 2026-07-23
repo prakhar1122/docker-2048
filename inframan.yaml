@@ -39,5 +39,5 @@ services:
             method: docker
             dockerfile: ./Dockerfile
         connections:
-            API: service/docker-2048/api
+            API_URL: service/docker-2048/api
  
