@@ -1,7 +1,9 @@
 # Managed by Inframan — generated from console config. Edits here are the source of truth.
 version: v1
 # immutable — managed by Inframan, do not edit
-application: DOCKER-2048
+application: docker-2048
+# immutable — managed by Inframan, do not edit
+namespace: docker-2048
 services:
     api:
         type: web
