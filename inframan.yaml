@@ -19,10 +19,11 @@ services:
         path: api
         build:
             method: docker
-            dockerfile: ./Dockerfile
+            dockerfile: api/Dockerfile
     game:
         type: web
         port: 80
+        domain: 23july.inframan.cloud
         path_prefix: /
         node_pool: application-pool
         scaling:
@@ -36,4 +37,6 @@ services:
         path: game
         build:
             method: docker
-            dockerfile: ./Dockerfile
+            dockerfile: game/Dockerfile
+        connections:
+            API_URL: service/docker-2048/api
