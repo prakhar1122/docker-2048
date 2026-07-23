@@ -23,7 +23,7 @@ services:
     game:
         type: web
         port: 80
-        domain: lcms.lkms.inframan.cloud
+        domain: 23july.inframan.cloud
         path_prefix: /
         node_pool: application-pool
         scaling:
