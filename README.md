@@ -4,7 +4,7 @@
 simple is better very better again mig cicd 3
 fff
 fffff   
-
+ 
 
 a smaller docker version of 2048   
         
