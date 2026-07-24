@@ -9,3 +9,4 @@ function postEvent(type, payload) {
     }).catch(function () {});
   } catch (e) {}
 }
+  
