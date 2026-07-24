@@ -1,4 +1,4 @@
-function postEvent(type, payload) {
+dfunction postEvent(type, payload) {
   try {
     var body = JSON.stringify(Object.assign({ type: type, ts: Date.now() }, payload || {}));
     fetch("/api/event", {
@@ -9,4 +9,5 @@ function postEvent(type, payload) {
     }).catch(function () {});
   } catch (e) {}
 }
+  
   
