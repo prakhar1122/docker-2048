@@ -1,5 +1,10 @@
+// Build marker — Sprint 0 credential remediation, 2026-07-31.
+//
+// Bumped to force a real CI build. Earlier smoke runs redeployed an unchanged
+// commit, so CI resolved the existing image and skipped clone/build/push
+// entirely, leaving the builder VM's env-sourced credentials unexercised.
 package main
- 
+
 import (
 	"context"
 	"encoding/json"
