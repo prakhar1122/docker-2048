@@ -12,7 +12,7 @@ services:
             type: concurrency
             min_replicas: 1
             max_replicas: 1
-            target: 100
+            target: 166
         resources:
             cpu_request: 100m
             memory_request: 128Mi
