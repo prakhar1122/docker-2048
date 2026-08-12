@@ -20,6 +20,8 @@ services:
         build:
             method: docker
             dockerfile: Dockerfile
+        connections:
+            REDIS_URL: redis/cache
     game:
         type: web
         port: 80
