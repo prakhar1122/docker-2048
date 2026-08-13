@@ -22,6 +22,34 @@ import (
 var rdb *redis.Client
 var pdb *sql.DB
 
+// pingWithRetry probes a dependency until it answers, instead of once at startup.
+//
+// The container is running before its Istio sidecar has finished programming
+// outbound routing, and a connection opened in that window is reset. Observed on
+// a cold start: Postgres failed with "tls error: read: connection reset by peer"
+// while the same pod's later /health calls reported it healthy, no restart in
+// between. A single probe therefore logs a failure for a dependency that is
+// reachable seconds later — which makes the startup log actively misleading.
+func pingWithRetry(name string, ping func(context.Context) error) error {
+	const attempts = 6
+
+	var err error
+	for i := 1; i <= attempts; i++ {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		err = ping(ctx)
+		cancel()
+
+		if err == nil {
+			return nil
+		}
+		if i < attempts {
+			fmt.Printf("%s: not ready (attempt %d/%d), retrying: %v\n", name, i, attempts, err)
+			time.Sleep(2 * time.Second)
+		}
+	}
+	return err
+}
+
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -38,9 +66,9 @@ func main() {
 			fmt.Printf("redis: invalid REDIS_URL: %v\n", err)
 		} else {
 			rdb = redis.NewClient(opts)
-			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-			defer cancel()
-			if err := rdb.Ping(ctx).Err(); err != nil {
+			if err := pingWithRetry("redis", func(ctx context.Context) error {
+				return rdb.Ping(ctx).Err()
+			}); err != nil {
 				fmt.Printf("redis: ping failed: %v\n", err)
 			} else {
 				fmt.Println("redis: connected")
@@ -56,11 +84,11 @@ func main() {
 			fmt.Printf("postgres: invalid DATABASE_URL: %v\n", err)
 		} else {
 			pdb = db
-			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-			defer cancel()
-			if err := pdb.PingContext(ctx); err != nil {
+			if err := pingWithRetry("postgres", pdb.PingContext); err != nil {
 				fmt.Printf("postgres: ping failed: %v\n", err)
 			} else {
+				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+				defer cancel()
 				var version string
 				if err := pdb.QueryRowContext(ctx, "SELECT version()").Scan(&version); err != nil {
 					fmt.Printf("postgres: connected, but version query failed: %v\n", err)
