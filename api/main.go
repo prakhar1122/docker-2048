@@ -7,6 +7,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,11 +15,13 @@ import (
 	"os"
 	"time"
 
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/redis/go-redis/v9"
 )
 
 var rdb *redis.Client
-    
+var pdb *sql.DB
+
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -45,6 +48,29 @@ func main() {
 		}
 	} else {
 		fmt.Println("redis: REDIS_URL not set, skipping connection")
+	}
+
+	if dbURL := os.Getenv("DATABASE_URL"); dbURL != "" {
+		db, err := sql.Open("pgx", dbURL)
+		if err != nil {
+			fmt.Printf("postgres: invalid DATABASE_URL: %v\n", err)
+		} else {
+			pdb = db
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+			if err := pdb.PingContext(ctx); err != nil {
+				fmt.Printf("postgres: ping failed: %v\n", err)
+			} else {
+				var version string
+				if err := pdb.QueryRowContext(ctx, "SELECT version()").Scan(&version); err != nil {
+					fmt.Printf("postgres: connected, but version query failed: %v\n", err)
+				} else {
+					fmt.Printf("postgres: connected — %s\n", version)
+				}
+			}
+		}
+	} else {
+		fmt.Println("postgres: DATABASE_URL not set, skipping connection")
 	}
 
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
@@ -139,19 +165,40 @@ func main() {
 
 		result := map[string]any{"status": "healthy"}
 
+		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
+		defer cancel()
+
+		degraded := false
+
 		if rdb == nil {
 			result["redis"] = "not_configured"
 		} else {
-			ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
-			defer cancel()
 			if err := rdb.Ping(ctx).Err(); err != nil {
 				result["redis"] = "unreachable"
 				result["redis_error"] = err.Error()
-				result["status"] = "degraded"
-				w.WriteHeader(http.StatusServiceUnavailable)
+				degraded = true
 			} else {
 				result["redis"] = "ok"
 			}
+		}
+
+		if pdb == nil {
+			result["postgres"] = "not_configured"
+		} else {
+			if err := pdb.PingContext(ctx); err != nil {
+				result["postgres"] = "unreachable"
+				result["postgres_error"] = err.Error()
+				degraded = true
+			} else {
+				result["postgres"] = "ok"
+			}
+		}
+
+		// Written after both probes so a Postgres failure cannot be masked by an
+		// earlier WriteHeader for Redis — the header may only be sent once.
+		if degraded {
+			result["status"] = "degraded"
+			w.WriteHeader(http.StatusServiceUnavailable)
 		}
 
 		json.NewEncoder(w).Encode(result)

@@ -22,6 +22,7 @@ services:
             dockerfile: Dockerfile
         connections:
             REDIS_URL: redis/cache
+            DATABASE_URL: postgres/main
     game:
         type: web
         port: 80
