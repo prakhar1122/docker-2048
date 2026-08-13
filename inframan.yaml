@@ -10,7 +10,7 @@ services:
         node_pool: application-pool
         scaling:
             type: concurrency
-            min_replicas: 1
+            min_replicas: 9
             max_replicas: 1
             target: 166
         resources:
