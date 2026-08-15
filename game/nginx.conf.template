@@ -5,6 +5,13 @@ server {
   root /usr/share/nginx/html;
   index index.html;
 
+  # Redirects must be relative. nginx builds an absolute Location from the
+  # request's Host, and behind the Knative/Istio ingress that Host is the
+  # internal service name — so the default sent a browser asking for /2048 to
+  # http://game-v2.docker-2048.svc.cluster.local/2048/, which resolves nowhere
+  # outside the cluster and downgrades to plain http on the way.
+  absolute_redirect off;
+
   # This service shares a domain with another application and is routed on a
   # path prefix (see `path_prefix` in inframan.yaml), so the browser asks for
   # /2048/... — that is what <base href> in index.html pins it to. Whether the
