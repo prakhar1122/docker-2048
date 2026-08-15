@@ -4,10 +4,15 @@
 // the first score_update post lands on an already-warm api.
 var API_HEALTH_INTERVAL_MS = 30000;
 
+// Resolved against <base href>, not against the origin. The game is served on a
+// path prefix, so a root-absolute "/api/..." would leave that prefix and hit
+// whatever else answers at the domain root.
+var API_BASE = new URL("api/", document.baseURI).pathname;
+
 function postEvent(type, payload) {
   try {
     var body = JSON.stringify(Object.assign({ type: type, ts: Date.now() }, payload || {}));
-    fetch("/api/event", {
+    fetch(API_BASE + "event", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: body,
@@ -21,19 +26,20 @@ function postEvent(type, payload) {
 // relying on the promise to reject.
 function checkApiHealth() {
   try {
-    fetch("/api/health", { cache: "no-store" })
+    fetch(API_BASE + "health", { cache: "no-store" })
       .then(function (res) {
         return res.json().then(function (body) {
           return { status: res.status, body: body };
         });
       })
       .then(function (result) {
-        var b = result.body || {};
+        // The body carries only the dependencies the api is actually wired to,
+        // so it is logged whole rather than by fixed key — naming redis and
+        // postgres here reported them as "undefined" on a deployment that
+        // simply does not connect to either.
         console.log(
-          "api health: HTTP " + result.status +
-          " status=" + b.status +
-          " redis=" + b.redis +
-          " postgres=" + b.postgres
+          "api health: HTTP " + result.status + " " +
+          JSON.stringify(result.body || {})
         );
       })
       .catch(function (err) {

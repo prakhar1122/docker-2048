@@ -5,6 +5,20 @@ server {
   root /usr/share/nginx/html;
   index index.html;
 
+  # This service shares a domain with another application and is routed on a
+  # path prefix (see `path_prefix` in inframan.yaml), so the browser asks for
+  # /2048/... — that is what <base href> in index.html pins it to. Whether the
+  # gateway forwards the prefix through or strips it first is not something the
+  # image can know, so the prefix is stripped here and location matching re-run:
+  # both forms then land on the same blocks below.
+  location = /2048 {
+    return 301 /2048/;
+  }
+
+  location /2048/ {
+    rewrite ^/2048(/.*)$ $1 last;
+  }
+
   location / {
     try_files $uri $uri/ =404;
   }

@@ -198,9 +198,13 @@ func main() {
 
 		degraded := false
 
-		if rdb == nil {
-			result["redis"] = "not_configured"
-		} else {
+		// Only dependencies this service is actually wired to are probed and
+		// reported. Neither REDIS_URL nor DATABASE_URL is set in every
+		// deployment — inframan.yaml decides — and a dependency with no URL is
+		// not a dependency at all. Naming it here anyway put "not_configured"
+		// in the payload of a perfectly healthy service, which reads as a fault
+		// that wants fixing rather than a connection nobody asked for.
+		if rdb != nil {
 			if err := rdb.Ping(ctx).Err(); err != nil {
 				result["redis"] = "unreachable"
 				result["redis_error"] = err.Error()
@@ -210,9 +214,7 @@ func main() {
 			}
 		}
 
-		if pdb == nil {
-			result["postgres"] = "not_configured"
-		} else {
+		if pdb != nil {
 			if err := pdb.PingContext(ctx); err != nil {
 				result["postgres"] = "unreachable"
 				result["postgres_error"] = err.Error()

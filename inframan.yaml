@@ -20,14 +20,11 @@ services:
         build:
             method: docker
             dockerfile: Dockerfile
-        connections:
-            REDIS_URL: redis/t4
-            DATABASE_URL: postgres/main
     game:
         type: web
         port: 80
-        domain: 23july.inframan.cloud
-        path_prefix: /
+        domain: movie.inframan.cloud
+        path_prefix: /2048
         node_pool: application-pool
         scaling:
             type: concurrency
