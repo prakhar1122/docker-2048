@@ -21,8 +21,8 @@ services:
             method: docker
             dockerfile: Dockerfile
         connections:
-            REDIS_URL: redis/t4
-            DATABASE_URL: postgres/main
+            REDIS_URL: redis/test
+            DATABASE_URL: postgres/movie
     game:
         type: web
         port: 80
