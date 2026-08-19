@@ -15,7 +15,7 @@ function postEvent(type, payload) {
     }).catch(function () {});
   } catch (e) {}
 }
-
+   
 // The api answers /health with 503 when a dependency is down, and fetch does not
 // reject on an error status — so the status code is read explicitly rather than
 // relying on the promise to reject.
