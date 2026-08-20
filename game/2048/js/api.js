@@ -7,7 +7,7 @@ var API_HEALTH_INTERVAL_MS = 30000;
 function postEvent(type, payload) {
   try {
     var body = JSON.stringify(Object.assign({ type: type, ts: Date.now() }, payload || {}));
-    fetch("/api/event", {
+    fetch("/2048/api/event", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: body,
@@ -21,7 +21,7 @@ function postEvent(type, payload) {
 // relying on the promise to reject.
 function checkApiHealth() {
   try {
-    fetch("/api/health", { cache: "no-store" })
+    fetch("/2048/api/health", { cache: "no-store" })
       .then(function (res) {
         return res.json().then(function (body) {
           return { status: res.status, body: body };

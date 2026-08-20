@@ -62,7 +62,7 @@
         // Instead, the api service exposes /ping which we call.
         // In a real setup, you'd configure nginx to proxy /api/* to API_URL.
         // For this test, we'll try a few common patterns:
-        const resp = await fetch('/api/ping');
+        const resp = await fetch('/2048/api/ping');
         const data = await resp.json();
         log(`← Response: ${JSON.stringify(data)}`, 'ok');
       } catch (e) {
@@ -74,7 +74,7 @@
     async function doRoundtrip() {
       log('→ Starting roundtrip: game → api → game...');
       try {
-        const resp = await fetch('/api/roundtrip');
+        const resp = await fetch('/2048/api/roundtrip');
         const data = await resp.json();
         log(`← Roundtrip response: ${JSON.stringify(data, null, 2)}`, 'ok');
       } catch (e) {
